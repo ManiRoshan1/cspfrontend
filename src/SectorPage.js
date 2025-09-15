@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const CONTACTS = {
@@ -51,26 +51,11 @@ export default function SectorPage({ sector }) {
   const [chatInput, setChatInput] = useState("");
   const [recognizing, setRecognizing] = useState(false);
   const [location, setLocation] = useState(null);
-  const [recentReports, setRecentReports] = useState([]);
 
   // Language change handler
   function changeLanguage(lang) {
     i18n.changeLanguage(lang);
   }
-
-  // Fetch recent reports on page load
-  useEffect(() => {
-    fetch("http://csp.onrender.com/api/reports")
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          setRecentReports(data.reports);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching reports:", error);
-      });
-  }, []);
 
   // Speech recognition setup
   let recognition;
@@ -146,6 +131,7 @@ export default function SectorPage({ sector }) {
     setPhoto(e.target.files[0]);
   }
 
+  // New submit handler to send data to backend
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -160,7 +146,7 @@ export default function SectorPage({ sector }) {
       }
       formData.append("chatMessage", chatInput);
 
-      const response = await fetch("http://csp.onrender.com/api/reports", {
+      const response = await fetch("http://localhost:5000/api/reports", {
         method: "POST",
         body: formData,
       });
@@ -168,8 +154,6 @@ export default function SectorPage({ sector }) {
       if (response.ok) {
         alert(t("reportSent"));
         handleClear();
-        const data = await response.json();
-        setRecentReports((prevReports) => [data.report, ...prevReports]);
       } else {
         alert(t("reportSendFailed"));
       }
@@ -255,9 +239,7 @@ export default function SectorPage({ sector }) {
                 {t("clear")}
               </button>
             </form>
-
             <div style={{ margin: "28px 0 8px", height: 1, background: "#eee" }} />
-
             <div>
               <input
                 type="text"
@@ -281,34 +263,9 @@ export default function SectorPage({ sector }) {
                 {t("send")}
               </button>
             </div>
-
             <h4 style={{ marginTop: 30 }}>{t("recentReports")}</h4>
-            {recentReports.length === 0 ? (
-              <div>{t("noRecentReports")}</div>
-            ) : (
-              recentReports.map((report) => (
-                <div key={report._id} style={{ padding: 12, borderBottom: "1px solid #ccc" }}>
-                  <strong>{report.title}</strong>
-                  <p>{report.description}</p>
-                  {report.photoUrl && (
-                    <img
-                      src={`http://localhost:5000${report.photoUrl}`}
-                      alt="Report"
-                      style={{ maxWidth: 150, marginTop: 8 }}
-                    />
-                  )}
-                  {report.latitude && report.longitude && (
-                    <p>
-                      {t("location")}: {report.latitude.toFixed(4)}, {report.longitude.toFixed(4)}
-                    </p>
-                  )}
-                  <p>{t("chatMessage")}: {report.chatMessage}</p>
-                  <small>{new Date(report.createdAt).toLocaleString()}</small>
-                </div>
-              ))
-            )}
+            <div>{t("noRecentReports")}</div>
           </div>
-
           <div style={{ flex: 1 }}>
             <h3>{t("contacts")}</h3>
             {CONTACTS[sector.id].map((contact) => (
