@@ -1,0 +1,22 @@
+{
+  "welcome": "Welcome",
+  "description": "This platform helps citizens report problems in four sectors: Irrigation, Electricity, Drainage, and Roads.",
+  "irrigation": "Irrigation",
+  "electricity": "Electricity",
+  "drainage": "Drainage",
+  "roads": "Roads",
+  "openTools": "Open tools and contacts for {{sector}}.",
+  "submitReport": "Submit a Report",
+  "title": "Title",
+  "describeIssue": "Describe the issue",
+  "photo": "Photo",
+  "useLocation": "Use my location",
+  "sendReport": "Send Report",
+  "clear": "Clear",
+  "typeMessage": "Type your message",
+  "voice": "Voice",
+  "send": "Send",
+  "recentReports": "Recent Reports",
+  "noRecentReports": "No recent reports.",
+  "contacts": "Contacts"
+}
